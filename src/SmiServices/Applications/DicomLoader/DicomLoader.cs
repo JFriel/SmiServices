@@ -175,7 +175,7 @@ public class DicomLoaderOptions : CliOptions
     // ReSharper disable once UnusedAutoPropertyAccessor.Global
     public bool LoadSql { get; set; }
 
-    [Option('mg', "mongo", Default = true, Required = false, HelpText = "Load data into Mongo")]
+    [Option('g', "mongo", Default = true, Required = false, HelpText = "Load data into Mongo")]
     // ReSharper disable once UnusedAutoPropertyAccessor.Global
     public bool LoadMongo { get; set; }
 
