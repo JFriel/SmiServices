@@ -60,8 +60,12 @@ public static class DicomLoader
 
         ParallelDLEHost? host = null;
         LoadMetadata? lmd = null;
-        var mongo = MongoClientHelpers.GetMongoClient(go.MongoDatabases.DicomStoreOptions, nameof(DicomLoader), false, true)
-            .GetDatabase(go.MongoDatabases.DicomStoreOptions.DatabaseName);
+        IMongoDatabase? mongo = null;
+        if (dicomLoaderOptions.LoadMongo)
+        {
+            mongo = MongoClientHelpers.GetMongoClient(go.MongoDatabases.DicomStoreOptions, nameof(DicomLoader), false, true)
+                .GetDatabase(go.MongoDatabases.DicomStoreOptions.DatabaseName);
+        }
         if (dicomLoaderOptions.LoadSql || dicomLoaderOptions.MatchMode != null)
         {
             FansiImplementations.Load();
@@ -98,7 +102,7 @@ public static class DicomLoader
             host = new ParallelDLEHost(rdmpRepo, instance, true);
 
             // MatchMode: reconcile Mongo contents with SQL:
-            if (dicomLoaderOptions.MatchMode != null)
+            if (dicomLoaderOptions.MatchMode != null && mongo is not null)
             {
                 var findOptions = new FindOptions<BsonDocument, BsonDocument>
                 {
@@ -170,6 +174,10 @@ public class DicomLoaderOptions : CliOptions
     [Option('s', "sql", Default = false, Required = false, HelpText = "Load data on to the SQL stage after Mongo")]
     // ReSharper disable once UnusedAutoPropertyAccessor.Global
     public bool LoadSql { get; set; }
+
+    [Option('s', "mongo", Default = true, Required = false, HelpText = "Load data into Mongo")]
+    // ReSharper disable once UnusedAutoPropertyAccessor.Global
+    public bool LoadMongo { get; set; }
 
     [Option(
         't',

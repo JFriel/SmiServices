@@ -26,8 +26,8 @@ public class Loader
 {
     private long _dicomCount, _fileCount;
     private readonly Stopwatch _timer;
-    private readonly IMongoCollection<BsonDocument> _imageStore;
-    private readonly IMongoCollection<SeriesMessage> _seriesStore;
+    private readonly IMongoCollection<BsonDocument>? _imageStore;
+    private readonly IMongoCollection<SeriesMessage>? _seriesStore;
     private List<ValueTuple<DicomFileMessage, DicomDataset>> _imageQueue;
     private static readonly RecyclableMemoryStreamManager _streamManager;
     private volatile bool _backlogged, _flushing;
@@ -131,6 +131,7 @@ public class Loader
 
     private async Task MongoFlush(ArraySegment<(DicomFileMessage, DicomDataset)> imageBatch)
     {
+        if (_imageStore is null && _seriesStore is null) return;
         await MongoSeriesFlush();
         while (imageBatch.Count > 10_000)
         {
@@ -143,6 +144,7 @@ public class Loader
     private static readonly InsertManyOptions _insertManyOptions = new() { IsOrdered = false };
     private async Task MongoImageFlush(ArraySegment<(DicomFileMessage, DicomDataset)> imageBatch)
     {
+        if (_imageStore is null) return;
         // Delete pre-existing entries, if applicable, then insert our queue:
         if (_loadOptions.DeleteConflicts)
         {
@@ -177,6 +179,7 @@ public class Loader
     // Now flush the SeriesMessage list to Mongo:
     private async Task MongoSeriesFlush()
     {
+        if (_seriesStore is null) return;
         var mongoStopwatch = Stopwatch.StartNew();
 
         // Grab the seriesList _write_ lock, we're about to swap it for a new one
@@ -258,7 +261,7 @@ public class Loader
     private readonly ParallelDLEHost? _parallelDleHost;
     private readonly LoadMetadata? _lmd;
 
-    public Loader(IMongoDatabase database, string imageCollection, string seriesCollection,
+    public Loader(IMongoDatabase? database, string imageCollection, string seriesCollection,
         DicomLoaderOptions loadOptions, ParallelDLEHost? parallelDleHost, LoadMetadata? lmd)
     {
         _imageQueueLock = new object();
@@ -280,8 +283,11 @@ public class Loader
         _parallelDleHost = parallelDleHost;
         _lmd = lmd;
         _statsLock = new object();
-        _imageStore = database.GetCollection<BsonDocument>(imageCollection);
-        _seriesStore = database.GetCollection<SeriesMessage>(seriesCollection);
+        if (database is not null)
+        {
+            _imageStore = database.GetCollection<BsonDocument>(imageCollection);
+            _seriesStore = database.GetCollection<SeriesMessage>(seriesCollection);
+        }
     }
 
     /// <summary>
