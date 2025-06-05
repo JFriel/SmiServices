@@ -88,14 +88,14 @@ public class Loader
             _imageQueue = new List<(DicomFileMessage, DicomDataset)>(imageBatch.Length);
         }
 
-        using var mf = MongoFlush(new ArraySegment<(DicomFileMessage, DicomDataset)>(imageBatch));
+        //using var mf = MongoFlush(new ArraySegment<(DicomFileMessage, DicomDataset)>(imageBatch));
         try
         {
             if (_parallelDleHost != null && _lmd != null) FlushRelational(_parallelDleHost, _lmd, imageBatch);
         }
         finally
         {
-            mf.Wait();
+            //mf.Wait();
             _backlogged = false;
         }
     }
