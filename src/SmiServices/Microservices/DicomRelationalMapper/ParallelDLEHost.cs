@@ -6,6 +6,7 @@ using Rdmp.Core.Curation.Data.Defaults;
 using Rdmp.Core.Curation.Data.EntityNaming;
 using Rdmp.Core.DataFlowPipeline;
 using Rdmp.Core.DataLoad;
+using Rdmp.Core.DataLoad.Engine.Checks.Checkers;
 using Rdmp.Core.DataLoad.Engine.DatabaseManagement.EntityNaming;
 using Rdmp.Core.DataLoad.Engine.LoadExecution;
 using Rdmp.Core.DataLoad.Engine.LoadExecution.Components;
@@ -99,8 +100,8 @@ public class ParallelDLEHost
         else
             listener.OnNotify(this, new NotifyEventArgs(ProgressEventType.Information, "Flag is false for SWAP RAW=>STAGING migration strategy to INSERT INTO So won't do it"));
 
-        var procedure = new DataLoadProcess(_repositoryLocator, lmd, null, logManager, listener, execution, _configuration);
-
+        var procedure = new DataLoadProcess(_repositoryLocator, lmd, new PreExecutionChecker(lmd,null), logManager, listener, execution, _configuration);
+        var x = (IDicomWorklist)payload;
         ExitCodeType exitCode = procedure.Run(new GracefulCancellationToken(), payload);
 
         return exitCode;

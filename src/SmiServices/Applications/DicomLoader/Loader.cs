@@ -92,6 +92,9 @@ public class Loader
         try
         {
             if (_parallelDleHost != null && _lmd != null) FlushRelational(_parallelDleHost, _lmd, imageBatch);
+        }catch(Exception e)
+        {
+            Console.WriteLine(e.Message);
         }
         finally
         {

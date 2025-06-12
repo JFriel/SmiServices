@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SmiServices.Microservices.DicomRelationalMapper;
 
-public class DicomFileMessageToDatasetListWorklist : IDicomDatasetWorklist
+public class DicomFileMessageToDatasetListWorklist : IDicomDatasetWorklist,IDicomWorklist
 {
     private readonly List<QueuedImage> _messages;
     private int _progress;

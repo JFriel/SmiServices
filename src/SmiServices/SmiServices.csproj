@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <AssemblyName>smi</AssemblyName>
         <IsPublishable>true</IsPublishable>
@@ -11,8 +11,9 @@
         <PackageReference Include="Equ" />
         <PackageReference Include="HIC.DicomTypeTranslation" />
         <PackageReference Include="HIC.FAnsiSql" />
-        <PackageReference Include="HIC.RDMP.Dicom" />
+        <PackageReference Include="HIC.Rdmp.Dicom" />
         <PackageReference Include="HIC.RDMP.Plugin" />
+        <PackageReference Include="HIC.RDMP.Plugin.Test" />
         <PackageReference Include="IsIdentifiable" />
         <PackageReference Include="LibArchive.Net" />
         <PackageReference Include="LineReader" />
