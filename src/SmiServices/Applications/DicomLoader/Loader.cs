@@ -427,6 +427,7 @@ public class Loader
     /// <returns>Whether there's already an entry for this file</returns>
     private bool ExistingEntry(string filename)
     {
+        if (_imageStore is null) return true;
         return _imageStore.AsQueryable().Any(i => i["header.DicomFilePath"].CompareTo(filename) == 0);
     }
 
