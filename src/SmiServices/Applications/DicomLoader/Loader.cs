@@ -286,7 +286,7 @@ public class Loader
         _parallelDleHost = parallelDleHost;
         _lmd = lmd;
         _statsLock = new object();
-        if (database is not null)
+        if (database is not null && _loadOptions.LoadMongo)
         {
             _imageStore = database.GetCollection<BsonDocument>(imageCollection);
             _seriesStore = database.GetCollection<SeriesMessage>(seriesCollection);
